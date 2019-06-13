@@ -1,0 +1,139 @@
+import java.lang.*
+
+fun main(args: Array<String>) {
+    // Your code here!
+    //itemlListSetTest()
+    //itemListUpdateTest()
+    itemListSetRemoveTest()
+}
+
+fun itemlListSetTest() {
+    val apple = ItemSet("apple" ,120 ,8)
+    val banana = ItemSet("banana" ,280 ,1)
+    val apple2 = ItemSet("apple" ,100 ,10)
+    
+    var itemList = ItemListSet()
+    itemList.add(apple)
+    itemList.add(banana)
+    
+    println("apple2 add => ${itemList.add(apple2)}")
+    println("apple add secondary => ${itemList.add(apple)}")
+    
+    viewList(itemList)
+    println(itemList.sumPrice())
+}
+
+fun itemListUpdateTest() {
+    val apple = ItemSet("apple" ,120 ,8)
+    val banana = ItemSet("banana" ,280 ,1)
+    val apple2 = ItemSet("apple" ,100 ,10)
+    val banana2 = ItemSet("banana" ,498 ,1)
+    
+    var itemList = ItemListSet()
+    itemList.add(apple)
+    itemList.add(banana)
+
+    viewList(itemList)
+    
+    itemList.add(apple2)
+    itemList.add(banana2)
+    
+    println()
+    apple.plus()
+    viewList(itemList)
+    
+}
+
+fun itemListSetRemoveTest() {
+    val apple = ItemSet("apple" ,120 ,8)
+    val banana = ItemSet("banana" ,280 ,1)
+    
+    var itemList = ItemListSet()
+    itemList.add(apple)
+    itemList.add(banana)
+    
+    viewList(itemList)
+    
+    itemList.remove(apple.itemId)
+    
+    println("\nAfter removed function ")
+    viewList(itemList)
+    
+    itemList.remove(banana.itemId)
+    viewList(itemList)
+}
+
+fun viewList(items: ItemListSet) {
+    if(items.isEmpty()) {
+        println("\nCollections is Empty !!")
+        return    
+    }
+    items.itemSet.forEach() {
+        println(it.toString())
+    }
+}
+
+class ItemListSet() {
+    var itemSet = mutableSetOf<ItemSet>()
+    fun add(item: ItemSet): Boolean {
+        if(this.checkId(item.itemId)) return this.updateItem(item)
+        return this.itemSet.add(item)
+    }
+    fun remove(itemId: String): Boolean {
+        this.itemSet.forEach() {
+            if(it.itemId == itemId) return this.itemSet.remove(it)
+        }
+        return false
+    }
+    fun isEmpty(): Boolean {
+        return !this.itemSet.isNotEmpty()
+    }
+    fun sumPrice(): Long {
+        var result: Long = 0L
+        for(item in this.itemSet) {
+            result += item.getSumPrice()
+        }
+        return result
+    }
+    private fun checkId(itemId: String): Boolean {
+        this.itemSet.forEach {
+            if(it.itemId == itemId) return true
+        }
+        return false
+    }
+    private fun updateItem(item: ItemSet): Boolean {
+       this.itemSet.forEach() {
+           if(it.itemId == item.itemId) {
+               it.setItem(item)
+               return true
+           }
+       }
+       return false
+    }
+}
+
+class ItemSet(itemId: String ,price: Int ,quantity: Int) {
+    var itemId: String = itemId
+    var price: Int = price
+    var quantity: Int = quantity
+    
+    fun setItem(item: ItemSet) {
+        this.price = item.price
+        this.quantity = item.quantity
+    }
+    fun getSumPrice(): Long {
+        val result = price * quantity
+        return result.toLong()
+    }
+    fun plus() {
+        if(Integer.MAX_VALUE == this.quantity) return
+        this.quantity++
+    }
+    fun minus() {
+        if(this.quantity == 0) return 
+        this.quantity--
+    }
+    override fun toString(): String {
+        return "${this.itemId} => ${this.price}円 , ${this.quantity}個"
+    }
+}
